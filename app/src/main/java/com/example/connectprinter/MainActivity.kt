@@ -6,6 +6,7 @@ import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.print.*
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.ByteArrayInputStream
@@ -14,7 +15,6 @@ import java.net.Inet4Address
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.Socket
-import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,17 +30,38 @@ class MainActivity : AppCompatActivity() {
         val button6 = findViewById<Button>(R.id.button6_zebra)
         val button7 = findViewById<Button>(R.id.button7_smb_cifs)
         val button8 = findViewById<Button>(R.id.button8_rawprinter)
+        val edtIp = findViewById<EditText>(R.id.edtIP)
+        val edtPorta = findViewById<EditText>(R.id.edtPorta)
 
         button1.setOnClickListener {
-            printer1SocketIPePORTA("bematech", "Hello word")
+            var nome = edtIp.text.toString()
+            if (!nome.isEmpty()) {
+                Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
+                printer1SocketNomeImpressora(nome, "printer1SocketIPePORTA")
+            } else {
+                Toast.makeText(this, "Não digitou o nome da impressora", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         button2.setOnClickListener {
-            printer2SOCKETapenasPorta("bematech", "Hello Word", 9100)
+            var nome = edtIp.text.toString()
+            var porta = edtPorta.text.toString()
+            if (!nome.isEmpty()) {
+                if(!porta.isEmpty()){
+                    Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
+                    printer2SOCKETNomePorta(nome, "printer2SOCKETapenasPorta", porta.toInt())
+                }else{
+                    Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Não digitou o nome da impressora", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         button3.setOnClickListener {
-            printer3_framework("Hello Word", this)
+            printer3_framework("Hello word Hello Word", this)
         }
 
         button4.setOnClickListener {
@@ -64,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun printer1SocketIPePORTA(printerName: String, data: String) {
+    private fun printer1SocketNomeImpressora(printerName: String, data: String) {
         val devices = mutableSetOf<String>()
         val net = NetworkInterface.getNetworkInterfaces()
 
@@ -89,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun printer2SOCKETapenasPorta(printerName: String, data: String,porta: Int) {
+    private fun printer2SOCKETNomePorta(printerName: String, data: String, porta: Int) {
         val devices = mutableSetOf<String>()
         val net = NetworkInterface.getNetworkInterfaces()
 
@@ -112,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val printerIpAddress = devices.firstOrNull{ ip ->
+        val printerIpAddress = devices.firstOrNull { ip ->
             try {
                 Socket().use { socket ->
                     socket.connect(InetSocketAddress(ip, porta), 1000)
@@ -181,7 +202,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             printManager.print(jobName, printAdapter, null)
-        }catch (e: java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             Toast.makeText(this, "Erro ao imprimir", Toast.LENGTH_SHORT).show()
         }
 
@@ -289,7 +310,6 @@ class MainActivity : AppCompatActivity() {
 
         printer.close()
     }*/
-
 
 
 }
