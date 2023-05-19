@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             var porta = edtPorta.text.toString()
             if (!nome.isEmpty()) {
                 if(!porta.isEmpty()){
-                    printer1SocketNomeImpressora(nome, "printer2SOCKETapenasPorta", porta.toInt())
+                    printer1SocketNomeImpressora(nome, "printer1SocketNomeImpressora", porta.toInt())
                 }else{
                     Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
                 }
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             var porta = edtPorta.text.toString()
             if (!nome.isEmpty()) {
                 if(!porta.isEmpty()){
-                    printer2SOCKETNomePorta(nome, "printer2SOCKETapenasPorta", porta.toInt())
+                    printer2SOCKETNomePorta(nome, "printer2SOCKETNomePorta", porta.toInt())
                 }else{
                     Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
                 }
