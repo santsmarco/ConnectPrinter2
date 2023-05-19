@@ -38,9 +38,13 @@ class MainActivity : AppCompatActivity() {
 
         button1.setOnClickListener {
             var nome = edtIp.text.toString()
+            var porta = edtPorta.text.toString()
             if (!nome.isEmpty()) {
-                Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
-                printer1SocketNomeImpressora(nome, "printer1SocketIPePORTA")
+                if(!porta.isEmpty()){
+                    printer1SocketNomeImpressora(nome, "printer2SOCKETapenasPorta", porta.toInt())
+                }else{
+                    Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(this, "Não digitou o nome da impressora", Toast.LENGTH_SHORT).show()
             }
@@ -52,7 +56,6 @@ class MainActivity : AppCompatActivity() {
             var porta = edtPorta.text.toString()
             if (!nome.isEmpty()) {
                 if(!porta.isEmpty()){
-                    Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
                     printer2SOCKETNomePorta(nome, "printer2SOCKETapenasPorta", porta.toInt())
                 }else{
                     Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
@@ -68,7 +71,6 @@ class MainActivity : AppCompatActivity() {
             var porta = edtPorta.text.toString()
             if (!ip.isEmpty()) {
                 if(!porta.isEmpty()){
-                    Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
                     sendPrintRequest(ip, porta.toInt())
                 }else{
                     Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
@@ -112,7 +114,6 @@ class MainActivity : AppCompatActivity() {
                 "Sorvete 1x\n" +
                 "Camarao 2x\n" +
                 "Obrigado volte sempre"
-
         val thread = Thread {
             try {
                 Socket(ipImpressoraCozinha, portaImpresssoraCozinha).use { sock ->
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         thread.start()
     }
 
-    private fun printer1SocketNomeImpressora(printerName: String, data: String) {
+    private fun printer1SocketNomeImpressora(printerName: String, data: String, porta:Int) {
         val devices = mutableSetOf<String>()
         val net = NetworkInterface.getNetworkInterfaces()
 
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 val inetAddress = addresses.nextElement()
 
                 if (!inetAddress.isLoopbackAddress && inetAddress.isSiteLocalAddress) {
-                    devices.add(inetAddress.getHostAddress())
+                    devices.add(inetAddress.hostAddress)
                 }
             }
         }
@@ -151,10 +152,23 @@ class MainActivity : AppCompatActivity() {
         val printerIpAddress = devices.firstOrNull { it.contains(printerName) }
 
         if (printerIpAddress == null) {
-            println("Impressora não encontrada na rede.")
+            Toast.makeText(this, "Impressora não encontrada na rede", Toast.LENGTH_SHORT).show()
             return
         }
+
+        try {
+            val socket = Socket(printerIpAddress, porta)
+            val writer = PrintWriter(socket.getOutputStream())
+            writer.write(data)
+            writer.flush()
+            writer.close()
+            socket.close()
+        } catch (e: IOException) {
+            Toast.makeText(this, "Erro ao imprimir", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
     }
+
 
     private fun printer2SOCKETNomePorta(printerName: String, data: String, porta: Int) {
         val devices = mutableSetOf<String>()
@@ -189,11 +203,11 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         } ?: run {
-            println("Impressora não encontrada na rede.")
+            Toast.makeText(this, "Impressora não encontrada na rede.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        Socket(printerIpAddress, 9100).use { socket ->
+        Socket(printerIpAddress, porta).use { socket ->
             socket.getOutputStream().write(data.toByteArray(Charsets.UTF_8))
         }
     }
