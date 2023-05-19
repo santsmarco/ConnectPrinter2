@@ -11,10 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.PrintWriter
 import java.net.Inet4Address
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.Socket
+import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,28 +64,71 @@ class MainActivity : AppCompatActivity() {
         }
 
         button3.setOnClickListener {
-            printer3_framework("Hello word Hello Word", this)
+            var ip = edtIp.text.toString()
+            var porta = edtPorta.text.toString()
+            if (!ip.isEmpty()) {
+                if(!porta.isEmpty()){
+                    Toast.makeText(this, "Imprimindo", Toast.LENGTH_SHORT).show()
+                    sendPrintRequest(ip, porta.toInt())
+                }else{
+                    Toast.makeText(this, "Não digitou a porta", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Não digitou o nome o IP", Toast.LENGTH_SHORT).show()
+            }
         }
 
         button4.setOnClickListener {
+            Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer4ToEscPosPrinter("192.168.0.102", "Hello Word",9100)
         }
 
         button5.setOnClickListener {
+            Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer5ToStarPrinter("192.168.0.102", "Hello Word",9100)
         }
 
         button6.setOnClickListener {
+            Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer6ToZebraPrinter("192.168.0.102", "Hello Word",9100)
         }
 
         button7.setOnClickListener {
+            Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer7SMBPrinter("192.168.0.102", "Hello Word")
         }
 
         button8.setOnClickListener {
+            Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer8ToRawPrinter("192.168.0.102", 9100, "Hello Word")
         }
+    }
+
+    fun sendPrintRequest(ipImpressoraCozinha:String,portaImpresssoraCozinha:Int) {
+        val TAG = "PrintSocket"
+
+        val textToPrint = "Pedidos Cozinha\n" +
+                "Salada 1x\n" +
+                "Sorvete 1x\n" +
+                "Camarao 2x\n" +
+                "Obrigado volte sempre"
+
+        val thread = Thread {
+            try {
+                Socket(ipImpressoraCozinha, portaImpresssoraCozinha).use { sock ->
+                    PrintWriter(sock.getOutputStream()).use { oStream ->
+                        oStream.println(textToPrint)
+                        oStream.println("\n")
+                    }
+                }
+            } catch (e: UnknownHostException) {
+                Toast.makeText(this, "Não foi possível encontrar o host", Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                Toast.makeText(this, "Erro: "+e.message.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        thread.start()
     }
 
     private fun printer1SocketNomeImpressora(printerName: String, data: String) {
