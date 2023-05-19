@@ -289,7 +289,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun printFileOnSharedPrinter(fileName: String, ipAddress: String, printerName: String) {
-        val auth = NtlmPasswordAuthentication(null, "Flavio", "123456")
+        val password = "jafi?ah\$bR1br!"
+        val user1 = "marcony.osantos"
+            //\\Mtznotfs058668\teste
+        val auth = NtlmPasswordAuthentication(null, user1, password)
         val file = File("teste")
         try{
         val smbFile = SmbFile("smb://$ipAddress/$printerName", auth)
