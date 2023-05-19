@@ -24,12 +24,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="1 Socket nome e porta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtIP" />
+        app:layout_constraintTop_toBottomOf="@+id/edtPrinterName" />
 
     <Button
         android:id="@+id/button2_socket_apenas_porta"
@@ -134,7 +135,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:hint="NOME IMPRESSORA OU IP"
+        android:hint="IP"
         android:inputType="text"
         android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -147,5 +148,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.50851583" />
+
+    <EditText
+        android:id="@+id/edtPrinterName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="NAME PRINTER"
+        android:inputType="text"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtIP" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

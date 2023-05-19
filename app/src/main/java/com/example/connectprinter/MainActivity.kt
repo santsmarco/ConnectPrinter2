@@ -9,7 +9,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import jcifs.smb.NtlmPasswordAuthentication
+import jcifs.smb.SmbFile
+import jcifs.smb.SmbFileOutputStream
 import java.io.ByteArrayInputStream
+import java.io.DataOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.PrintWriter
@@ -35,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         val button8 = findViewById<Button>(R.id.button8_rawprinter)
         val edtIp = findViewById<EditText>(R.id.edtIP)
         val edtPorta = findViewById<EditText>(R.id.edtPorta)
+        val edtPrinterName = findViewById<EditText>(R.id.edtPrinterName)
 
         button1.setOnClickListener {
             var nome = edtIp.text.toString()
@@ -98,6 +105,19 @@ class MainActivity : AppCompatActivity() {
         button7.setOnClickListener {
             Toast.makeText(this, "Desativado", Toast.LENGTH_SHORT).show()
             //printer7SMBPrinter("192.168.0.102", "Hello Word")
+            val ip = edtIp.text.toString()
+            val printerName = edtPrinterName.text.toString()
+
+            if(!ip.isEmpty()){
+                if(!printerName.isEmpty()){
+                    printFileOnSharedPrinter("teste", ip, printerName)
+                }else{
+                    Toast.makeText(this, "Falta nome impressora", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(this, "Falta IP", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         button8.setOnClickListener {
@@ -267,6 +287,24 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    fun printFileOnSharedPrinter(fileName: String, ipAddress: String, printerName: String) {
+        val auth = NtlmPasswordAuthentication(null, "Flavio", "123456")
+        val file = File("teste")
+        try{
+        val smbFile = SmbFile("smb://$ipAddress/$printerName", auth)
+        val fos = SmbFileOutputStream(smbFile)
+        val fis = FileInputStream(file)
+        fos.write(fis.readBytes())
+        fis.close()
+        fos.close()
+        } catch (e:Exception){
+            Toast.makeText(this@MainActivity, "Erro ao imprimir ou enviar impressão", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+
 
     //VALIDAR IMPLEMENTATION
     /*private fun printer4ToEscPosPrinter(printerIpAddress: String, textToPrint: String, porta: Int) {
